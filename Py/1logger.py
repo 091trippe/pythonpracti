@@ -1,6 +1,7 @@
 import sys
-import datetime
+from datetime import datetime
 
 def log(message):
-    time = str(datetime.datetime.now())
-    sys.stderr.write(f'[{time}] {message}\n')
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sys.stderr.write(f'[{current_time}] {message}\n')
+
