@@ -1,11 +1,12 @@
+import os
 from fastapi import FastAPI, HTTPException, Header, Depends
 from typing import Optional
 import httpx
 
 app = FastAPI()
 
-SECRET_PASSWORD = "secure444321"
-RAWG_API_KEY = "a1b2c3d4e5f6g7h8i9j0k1234567890ab"
+SECRET_PASSWORD = os.getenv("SECRET_PASSWORD", "default_password")
+RAWG_API_KEY = os.getenv("RAWG_API_KEY", "default_api_key")
 
 def verify_password(x_api_key: Optional[str] = Header(None)):
     if x_api_key != SECRET_PASSWORD:
@@ -21,6 +22,8 @@ async def fetch_metacritic_score(game_name: str) -> Optional[int]:
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(url, params=params)
+        if response.status_code != 200:
+            return None
         data = response.json()
         if "results" in data and len(data["results"]) > 0:
             game = data["results"][0]
